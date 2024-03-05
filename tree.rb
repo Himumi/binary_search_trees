@@ -50,6 +50,46 @@ class Tree
     @root = root
   end
 
+  def delete(value, root = @root)
+    return root if root.nil?
+
+    # recursion
+    if root.data < value
+      root.right = delete(value, root.right)
+      return root
+    elsif root.data > value
+      root.left = delete(value, root.left)
+      return root
+    end
+
+    # if node has zero or one child
+    if root.left.nil?
+      root = root.right 
+      return root
+    elsif root.right.nil?
+      root = root.left
+      return root
+    else
+      # if node has two children
+      parent_root = root
+      next_root = root.right
+      while next_root.left != nil
+        parent_root = next_root
+        next_root = next_root.left
+      end
+
+      root.data = next_root.data
+
+      if parent_root != root
+        parent_root.left = next_root.right
+      else
+        parent_root.right = next_root.right 
+      end
+
+      return root
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -75,5 +115,9 @@ trees.pretty_print
 p trees.print_trees
 
 trees.insert(100)
+
+trees.pretty_print
+
+trees.delete(100)
 
 trees.pretty_print
