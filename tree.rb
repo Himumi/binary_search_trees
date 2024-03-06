@@ -139,6 +139,16 @@ class Tree
     block.call(node) if block_given?
   end
 
+  def height(value, root = @root, height = 0)
+    return height if value == root.data
+
+    if value < root.data
+      height(value, root.left, height + 1)
+    elsif value > root.data
+      height(value, root.right, height + 1)
+    end
+  end
+  
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
