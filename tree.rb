@@ -16,6 +16,7 @@ end
 
 class Tree
   include MergeSort
+  attr_accessor :root
 
   def initialize; end
 
@@ -100,6 +101,20 @@ class Tree
     end
   end
 
+  def level_order(result = [], queue = [@root])
+    return if @root.nil?
+
+    until queue.empty?
+      curr = queue.shift
+      yield curr if block_given?
+      result << curr.data
+
+      queue << curr.left if curr.left
+      queue << curr.right if curr.right
+    end
+    result
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -133,3 +148,6 @@ trees.delete(8)
 puts trees.find(1)
 
 trees.pretty_print
+
+p trees.level_order
+
