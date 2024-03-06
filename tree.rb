@@ -115,6 +115,30 @@ class Tree
     result
   end
 
+  def inorder(node = @root, &block)
+    return if node.nil?
+
+    inorder(node.left, &block)
+    block.call(node) if block_given?
+    inorder(node.right, &block)
+  end
+
+  def preorder(node = @root, &block)
+    return if node.nil?
+
+    block.call(node) if block_given?
+    preorder(node.left, &block)
+    preorder(node.right, &block)
+  end
+
+  def postorder(node = @root, &block)
+    return if node.nil?
+
+    postorder(node.left, &block)
+    postorder(node.right, &block)
+    block.call(node) if block_given?
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -139,15 +163,10 @@ trees.pretty_print
 
 p trees.print_trees
 
-trees.insert(100)
-
 trees.pretty_print
 
-trees.delete(8)
-
-puts trees.find(1)
-
 trees.pretty_print
+p trees.root.data
+puts trees.height(6345)
 
-p trees.level_order
-
+# p trees.postorder_arr
