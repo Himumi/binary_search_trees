@@ -1,45 +1,48 @@
 require './lib/merge_sort'
 
 class Node
-  attr_accessor :left, :right
-  attr_reader :data
+  attr_accessor :left, :right, :data
+
   def initialize(data)
     @data = data
     @left = nil
     @right = nil
+  end
+
+  def to_s
+    "#{@data}"
   end
 end
 
 class Tree
   include MergeSort
 
-  def initialize
-    @root
-  end
+  def initialize; end
 
   def sorted?(arr)
     uniq = arr.uniq
     return uniq if uniq == uniq.sort
 
-    self.mergesort(uniq)
+    @sorted_numbers = mergesort(uniq)
   end
 
   def build_tree(arr)
     return nil if arr.empty?
+
     arr = sorted?(arr)
 
-    mid = (arr.length/2).round
+    mid = (arr.length / 2).round
 
     root = Node.new(arr[mid])
 
     root.left = build_tree(arr[0...mid])
-    root.right = build_tree(arr[mid+1..-1])
+    root.right = build_tree(arr[mid + 1..-1])
 
     @root = root
   end
 
   def insert(value, root = @root)
-    return @root = Node.new(value) if root.nil?
+    return root = Node.new(value) if root.nil?
 
     if value < root.data
       root.left = insert(value, root.left)
@@ -47,13 +50,12 @@ class Tree
       root.right = insert(value, root.right)
     end
 
-    @root = root
+    root
   end
 
   def delete(value, root = @root)
     return root if root.nil?
 
-    # recursion
     if root.data < value
       root.right = delete(value, root.right)
       return root
@@ -62,18 +64,16 @@ class Tree
       return root
     end
 
-    # if node has zero or one child
     if root.left.nil?
-      root = root.right 
-      return root
+      root.right
+
     elsif root.right.nil?
-      root = root.left
-      return root
+      root.left
+
     else
-      # if node has two children
       parent_root = root
       next_root = root.right
-      while next_root.left != nil
+      until next_root.left.nil?
         parent_root = next_root
         next_root = next_root.left
       end
@@ -83,10 +83,20 @@ class Tree
       if parent_root != root
         parent_root.left = next_root.right
       else
-        parent_root.right = next_root.right 
+        parent_root.right = next_root.right
       end
 
-      return root
+      root
+    end
+  end
+
+  def find(value, root = @root)
+    return root if root.data == value
+
+    if value < root.data
+      find(value, root.left)
+    elsif value > root.data
+      find(value, root.right)
     end
   end
 
@@ -118,6 +128,8 @@ trees.insert(100)
 
 trees.pretty_print
 
-trees.delete(100)
+trees.delete(8)
+
+puts trees.find(1)
 
 trees.pretty_print
