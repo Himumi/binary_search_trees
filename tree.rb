@@ -139,16 +139,17 @@ class Tree
     block.call(node) if block_given?
   end
 
-  def height(value, root = @root, height = 0)
-    return height if value == root.data
-
-    if value < root.data
-      height(value, root.left, height + 1)
-    elsif value > root.data
-      height(value, root.right, height + 1)
+  def height(value, node = find(value))
+    if node.nil?
+      return 0
+    else
+      lnode = height(value, node.left)
+      rnode = height(value, node.right)
+  
+      lnode > rnode ? (lnode + 1) : (rnode + 1)
     end
   end
-  
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -176,7 +177,7 @@ p trees.print_trees
 trees.pretty_print
 
 trees.pretty_print
-p trees.root.data
-puts trees.height(6345)
+puts "Root value is #{trees.root.data}"
+puts "Height is #{trees.height(9)}"
 
 # p trees.postorder_arr
