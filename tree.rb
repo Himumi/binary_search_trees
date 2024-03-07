@@ -140,14 +140,12 @@ class Tree
   end
 
   def height(value, node = find(value))
-    if node.nil?
-      return 0
-    else
-      lnode = height(value, node.left)
-      rnode = height(value, node.right)
-  
-      lnode > rnode ? (lnode + 1) : (rnode + 1)
-    end
+    return 0 if node.nil?
+
+    lnode = height(value, node.left)
+    rnode = height(value, node.right)
+
+    lnode > rnode ? (lnode + 1) : (rnode + 1)
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -178,6 +176,6 @@ trees.pretty_print
 
 trees.pretty_print
 puts "Root value is #{trees.root.data}"
-puts "Height is #{trees.height(9)}"
+puts "Height is #{trees.height(8)}"
 
 # p trees.postorder_arr
