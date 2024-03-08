@@ -148,6 +148,18 @@ class Tree
     lnode > rnode ? (lnode + 1) : (rnode + 1)
   end
 
+  # def depth(value, node = @root, height = 0)
+  #   return height if node.data == value
+
+  #   value < node.data ? depth(value, node.left, height + 1) : depth(value, node.right, height + 1)
+  # end
+
+  def depth(value, node = @root)
+    return 0 if node.data == value
+
+    value < node.data ? depth(value, node.left) + 1 : depth(value, node.right) + 1
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -170,12 +182,13 @@ trees.build_tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
 
 trees.pretty_print
 
-p trees.print_trees
+p  trees.print_trees
 
 trees.pretty_print
 
 trees.pretty_print
 puts "Root value is #{trees.root.data}"
 puts "Height is #{trees.height(8)}"
+puts "Depth of 324 is #{trees.depth(324)}"
 
 # p trees.postorder_arr
