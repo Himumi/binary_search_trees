@@ -160,6 +160,19 @@ class Tree
     value < node.data ? depth(value, node.left) + 1 : depth(value, node.right) + 1
   end
 
+  def balanced?(node = @root)
+    lnodes = total_nodes(node.left)
+    rnodes = total_nodes(node.right)
+
+    lnodes < rnodes ? (rnodes - lnodes) <= 1 : (lnodes - rnodes) <= 1
+  end
+
+  def total_nodes(node)
+    return 0 if node.nil?
+
+    (total_nodes(node.left) + total_nodes(node.right)) + 1
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -182,7 +195,7 @@ trees.build_tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
 
 trees.pretty_print
 
-p  trees.print_trees
+p trees.print_trees
 
 trees.pretty_print
 
@@ -191,4 +204,4 @@ puts "Root value is #{trees.root.data}"
 puts "Height is #{trees.height(8)}"
 puts "Depth of 324 is #{trees.depth(324)}"
 
-# p trees.postorder_arr
+puts "Is this trees balanced? : #{trees.balanced?}"
