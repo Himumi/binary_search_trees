@@ -119,14 +119,14 @@ class Tree
     return if node.nil?
 
     inorder(node.left, &block)
-    block.call(node) if block_given?
+    block.call(node.data) if block_given?
     inorder(node.right, &block)
   end
 
   def preorder(node = @root, &block)
     return if node.nil?
 
-    block.call(node) if block_given?
+    block.call(node.data) if block_given?
     preorder(node.left, &block)
     preorder(node.right, &block)
   end
@@ -136,7 +136,7 @@ class Tree
 
     postorder(node.left, &block)
     postorder(node.right, &block)
-    block.call(node) if block_given?
+    block.call(node.data) if block_given?
   end
 
   def height(value, node = find(value))
@@ -205,3 +205,10 @@ puts "Height is #{trees.height(8)}"
 puts "Depth of 324 is #{trees.depth(324)}"
 
 puts "Is this trees balanced? : #{trees.balanced?}"
+
+trees.inorder { |item| print "#{item} "}
+puts ''
+trees.preorder { |item| print "#{item} "}
+puts ''
+trees.postorder { |item| print "#{item} "}
+puts ''
