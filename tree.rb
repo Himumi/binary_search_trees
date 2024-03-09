@@ -20,11 +20,19 @@ class Tree
 
   def initialize; end
 
-  def sorted?(arr)
-    uniq = arr.uniq
-    return uniq if uniq == uniq.sort
+  def pretty_print(node = @root, prefix = '', is_left = true)
+    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
+    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
+    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
+  end
 
-    mergesort(arr)
+  def print_trees(node = @root, trees = [])
+    return if node.nil?
+
+    trees << node.data
+    print_trees(node.left, trees)
+    print_trees(node.right, trees)
+    trees
   end
 
   def build_tree(arr)
@@ -45,12 +53,7 @@ class Tree
   def insert(value, root = @root)
     return root = Node.new(value) if root.nil?
 
-    if value < root.data
-      root.left = insert(value, root.left)
-    elsif value > root.data
-      root.right = insert(value, root.right)
-    end
-
+    value < root.data ? root.left = insert(value, root.left) : root.right = insert(value, root.right)
     root
   end
 
@@ -65,41 +68,32 @@ class Tree
       return root
     end
 
-    if root.left.nil?
-      root.right
+    root.right if root.left.nil?
+    root.left if root.right.nil?
 
-    elsif root.right.nil?
-      root.left
-
-    else
-      parent_root = root
-      next_root = root.right
-      until next_root.left.nil?
-        parent_root = next_root
-        next_root = next_root.left
-      end
-
-      root.data = next_root.data
-
-      if parent_root != root
-        parent_root.left = next_root.right
-      else
-        parent_root.right = next_root.right
-      end
-
-      root
+    parent_root = root
+    next_root = root.right
+    until next_root.left.nil?
+      parent_root = next_root
+      next_root = next_root.left
     end
+
+    root.data = next_root.data
+
+    if parent_root != root
+      parent_root.left = next_root.right
+    else
+      parent_root.right = next_root.right
+    end
+
+    root
   end
 
   def find(value, root = @root)
     return nil if root.nil?
     return root if root.data == value
 
-    if value < root.data
-      find(value, root.left)
-    elsif value > root.data
-      find(value, root.right)
-    end
+    value < root.data ? find(value, root.left) : find(value, root.right)
   end
 
   def level_order(result = [], queue = [@root])
@@ -140,6 +134,20 @@ class Tree
     block.call(node.data) if block_given?
   end
 
+  def balanced?(node = @root)
+    lnodes = total_nodes(node.left)
+    rnodes = total_nodes(node.right)
+
+    lnodes < rnodes ? (rnodes - lnodes) <= 1 : (lnodes - rnodes) <= 1
+  end
+
+  def rebalance
+    data = []
+    inorder { |item| data << item }
+
+    build_tree(data)
+  end
+
   def height(value, node = find(value))
     return 0 if node.nil?
 
@@ -155,39 +163,18 @@ class Tree
     value < node.data ? depth(value, node.left) + 1 : depth(value, node.right) + 1
   end
 
-  def balanced?(node = @root)
-    lnodes = total_nodes(node.left)
-    rnodes = total_nodes(node.right)
+  protected
+  def sorted?(arr)
+    uniq = arr.uniq
+    return uniq if uniq == uniq.sort
 
-    lnodes < rnodes ? (rnodes - lnodes) <= 1 : (lnodes - rnodes) <= 1
+    mergesort(arr)
   end
-
-  def rebalance
-    data = []
-    inorder { |item| data << item }
-
-    build_tree(data)
-  end
-
+  
   def total_nodes(node)
     return 0 if node.nil?
 
     (total_nodes(node.left) + total_nodes(node.right)) + 1
-  end
-
-  def pretty_print(node = @root, prefix = '', is_left = true)
-    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
-    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
-    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
-  end
-
-  def print_trees(node = @root, trees = [])
-    return nil if node.nil?
-
-    trees << node.data
-    print_trees(node.left, trees)
-    print_trees(node.right, trees)
-    trees
   end
 end
 
