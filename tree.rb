@@ -1,7 +1,7 @@
 require './lib/merge_sort'
 
 class Node
-  attr_accessor :left, :right, :data
+  attr_accessor :data, :left, :right
 
   def initialize(data)
     @data = data
@@ -92,6 +92,7 @@ class Tree
   end
 
   def find(value, root = @root)
+    return nil if root.nil?
     return root if root.data == value
 
     if value < root.data
@@ -148,12 +149,6 @@ class Tree
     lnode > rnode ? (lnode + 1) : (rnode + 1)
   end
 
-  # def depth(value, node = @root, height = 0)
-  #   return height if node.data == value
-
-  #   value < node.data ? depth(value, node.left, height + 1) : depth(value, node.right, height + 1)
-  # end
-
   def depth(value, node = @root)
     return 0 if node.data == value
 
@@ -197,37 +192,15 @@ class Tree
 end
 
 trees = Tree.new
-
-trees.build_tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
-
-trees.pretty_print
-
-p trees.print_trees
+arr = (300..500).to_a.sample(50)
+trees.build_tree(arr)
 
 trees.pretty_print
-
-trees.pretty_print
-puts "Root value is #{trees.root.data}"
-puts "Height is #{trees.height(8)}"
-puts "Depth of 324 is #{trees.depth(324)}"
-
-puts "Is this trees balanced? : #{trees.balanced?}"
-
-trees.inorder { |item| print "#{item} "}
-puts ''
-trees.preorder { |item| print "#{item} "}
-puts ''
-trees.postorder { |item| print "#{item} "}
-puts ''
-
-range = (1..100).to_a
-
-100.times do
-  trees.insert(range.sample)
-end
-
+puts "Is tree balanced? : #{trees.balanced?}"
+arr2 = (1..800).to_a.sample(50)
+arr2.each { |item| trees.insert(item) }
 trees.pretty_print
 puts "Is tree balanced? : #{trees.balanced?}"
 trees.rebalance
 trees.pretty_print
-puts "Is tree balanced? : #{trees.balanced?}"
+puts "Is this trees balanced? : #{trees.balanced?}"
