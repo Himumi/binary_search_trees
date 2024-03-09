@@ -24,7 +24,7 @@ class Tree
     uniq = arr.uniq
     return uniq if uniq == uniq.sort
 
-    @sorted_numbers = mergesort(uniq)
+    mergesort(arr)
   end
 
   def build_tree(arr)
@@ -167,6 +167,13 @@ class Tree
     lnodes < rnodes ? (rnodes - lnodes) <= 1 : (lnodes - rnodes) <= 1
   end
 
+  def rebalance
+    data = []
+    inorder { |item| data << item }
+
+    build_tree(data)
+  end
+
   def total_nodes(node)
     return 0 if node.nil?
 
@@ -212,3 +219,15 @@ trees.preorder { |item| print "#{item} "}
 puts ''
 trees.postorder { |item| print "#{item} "}
 puts ''
+
+range = (1..100).to_a
+
+100.times do
+  trees.insert(range.sample)
+end
+
+trees.pretty_print
+puts "Is tree balanced? : #{trees.balanced?}"
+trees.rebalance
+trees.pretty_print
+puts "Is tree balanced? : #{trees.balanced?}"
